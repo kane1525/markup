@@ -1,0 +1,164 @@
+<!-- Все мои коментарии в файле css -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slick</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="slick/slick.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Mobile-menu -->
+    <nav class="mobile-menu">
+      <a href="#" class="mobile-menu__navigation-link">gallery</a>
+      <a href="#" class="mobile-menu__navigation-link">history</a>
+      <a href="#" class="mobile-menu__navigation-link">contact us</a>
+    </nav>
+    <!-- End of Mobile-menu -->
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header__logo-wrapper">
+        <img src="icons/logo.svg" alt="logo" class="logo" height="60px" />
+        <div class="burger">
+          <div class="burger__line">Line</div>
+          <div class="burger__line">Line</div>
+          <div class="burger__line">Line</div>
+        </div>
+      </div>
+
+      <nav class="header__navigation">
+        <a href="#" class="header__navigation-link">gallery</a>
+        <a href="#" class="header__navigation-link">history</a>
+        <a href="#" class="header__navigation-link">contact us</a>
+      </nav>
+    </header>
+    <!-- End of Header -->
+
+    <main>
+      <!-- Slider -->
+      <div class="slider">
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/1.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/2.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/3.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/4.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/1.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/2.png" alt="img1" />
+          </div>
+        </div>
+        <div class="slider__item">
+          <div class="slider__img-and-flag">
+            <img src="img/3.png" alt="img1" />
+          </div>
+        </div>
+      </div>
+      <!-- End of Slider -->
+
+      <div class="content-container">
+        <!-- About Us -->
+        <div class="about-us">
+          <p class="about-us__paragraph">
+            We are an architectural firm with a long history and extensive
+            experience. Our intention is to help Ukrainians rebuild their homes
+            and buildings even better than they were before the war.
+          </p>
+          <div class="about-us__paragraph">
+            <p class="about-us__sentence">
+              Please take a look at our history and contact us if you are
+              intrested.
+            </p>
+            <p class="about-us__sentence">
+              We would be really glad to join the help to Ukraine as we can.
+            </p>
+          </div>
+          <p class="about-us__paragraph">Glory to Ukraine!</p>
+        </div>
+        <!-- End of About Us -->
+
+        <!-- 1 Section -->
+        <section class="section">
+          <h1 class="section__heading">HISTORY</h1>
+          <div class="section__heading-underline">underline</div>
+          <div class="section__cards-wrapper">
+            <div class="card">
+              <p class="card__article">
+                <strong>1890</strong> Fusce rhoncus at sapien at sollicitudin.
+                Quisque semper sollicitudin libero eget placerat. Aliquam quis
+                laoreet tellus. In id congue lacus. Nulla vestibulum turpis et
+                nisi consequat, non sagittis purus interdum. Nunc eu dolor urna.
+                Quisque fermentum risus quam, at consectetur leo tincidunt id.
+                Nulla facilisi.
+              </p>
+            </div>
+            <div class="card">
+              <p class="card__article">
+                <strong>1920</strong> Aliquam erat volutpat. Curabitur et
+                accumsan odio, eget scelerisque risus. Suspendisse ultrices
+                mattis accumsan. In hac habitasse platea dictumst. In non nisl
+                turpis. Sed sit amet purus odio. Donec aliquam leo a tortor
+                tincidunt, vel molestie neque commodo. Ut pellentesque ut ex
+                pulvinar aliquam. Morbi porttitor, felis quis convallis
+                tincidunt, augue felis euismod lectus, a placerat purus justo
+                eget magna. Mauris neque nisi, pharetra, vehicula non lorem.
+              </p>
+            </div>
+          </div>
+        </section>
+        <!-- End of 1 Section -->
+
+        <!-- 2 Section -->
+        <section class="section">
+          <h2 class="section__heading">CONTACT US</h2>
+          <div class="section__heading-underline">underline</div>
+          <form id="form" class="form">
+            <div class="form__textarea-wrapper">
+              <textarea
+                name="message"
+                rows="1"
+                placeholder="type your message here"
+                class="form__textarea"
+              ></textarea>
+              <button type="submit" form="form" class="form__btn">SEND</button>
+            </div>
+          </form>
+        </section>
+        <!-- End of 2 section -->
+      </div>
+    </main>
+    <script src="slick/jquery-1.11.0.min.js"></script>
+    <script src="slick/jquery-migrate-1.2.1.min.js"></script>
+    <script src="slick/slick.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

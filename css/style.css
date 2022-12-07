@@ -1,0 +1,638 @@
+/* --- Преподавателю по поводу слайдера --- */
+
+/* Самое главное */
+
+/* На тех брейкпоинтах, которые на макете (375px, 1024px, 1440px), ширина слайдов на сайте = ширине слайдов на макете */
+/* Дальше я описываю поведение слайдов, которое я сделал между этими точками, если интересно, можете почитать, но вообще не обязательно) */
+/* И еще один момент */
+/* Я не понял, зачем менять соотношение сторон картинок, это странно, на компьютере одно соотношение, на планшете другое, на телефоне третье */
+/* На работе я б конечно побежал спрашивать, но тут решил уже не дергать вас, а просто сделал одно соотношение на всех экранах, надеюсь вы меня простите)) */
+
+/* Конец самого главного */
+
+/* Про поведение моего слайдера при увелечении и уменьшении екрана от брейкпоинтов, читать не обязательно) */
+/* Но тут я описал всю свою логику, почему там сделал так, там сделал так, и как в принципе работает мой слайдер */
+
+/* Не было четкого описания, как должен вести себя слайдер и картинки в нем при увеличении, уменьшении екрана, поэтому так же я сам у себя в голове додумал поведение, которое я хочу */
+
+/* Было 2 варианта реализации поведения слайдера: */
+
+/* 1) Оставлять четкие размеры картинок. И при изменении размеров экрана менять расстояние между картинками */
+
+/* 2) Сделать статичное расстояние между картинками и менять размеры самих картинок */
+/* если мало места - уменьшаем, если много места - увеличиваем), но самое главное с сохранением соотношения сторон */
+
+/* 3) Можно смешать первый и второй, (если увеличиваем екран) например  до какого то момента увеличиваем картинку, например до ширины 500px */
+/* А дальше уже ширину не трогаем, а просто меняем расстояние между картинками */
+
+/* У меня в проекте реализован второй вариант, конкретно на тех же размерах экрана, что и на макете, ширина моих картинок соответствует ширине картинок макета */
+/* На промежуточных размерах экрана ширина картинок может отличаться */
+/* Высота не соответсвует, т.к. я оставил соотношение сторон везде одинаковое (2:1) */
+
+/* На самом большом экране я смешал 2 варинта поведения, до какого то момента картинки увеличиваются, потом они перестают увеличиваться и начинает увеличиваться расстояние между ними */
+/* Делаем тест на екране без скролбара (в том окошке, где можно выбирать разные устройства и менять скорость интернета) */
+/* идем от 1200px */
+/* сначала картинки плавно увеличиваются */
+/* как только позволяет место, картинки становятся 400 х 200, на точке 1318px */
+/* больше чем 400 пх они не могу быть (по задумке) */
+/* Начиная от 1318px увеливаюется расстояние мужду краем слайдера и краем екрана */
+/* Пока это расстояние не станет 80px (20px боковой маргин слайда + 60px боковой паддинг слайдера) */
+/* Это произойдет на 1440 px */
+/* И если будут еще больше екраны, я захотел изменить расстояние между слайдами, не трогая при этом размер картинок */
+/* Но опять же, я не хочу, что б расстояние между слайдами увеличивалось бесконечно, поэтому ограничитель - максимальная ширина слайдера, которую я задал */
+
+/* И конечно я не говорю, что как я сделал - идеально, но конкретного задания по поводу поведения слайдера я не видел, урок я не смотрел, поэтому решил потренироваться и сделать так) */
+
+:root {
+  --ua-blue: #005bbb;
+  --ua-yellow: #ffd500;
+}
+
+body {
+  font-size: 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  color: #005bbb;
+  padding-bottom: 160px;
+  line-height: 1.2;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: -100%;
+  width: 100%;
+  padding: 230px 0 120px 65px;
+  background-color: var(--ua-blue);
+  overflow: hidden;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+  color: var(--ua-blue);
+  transition: top 1s, color 0.2s;
+  z-index: 1;
+}
+
+.mobile-menu.opened {
+  top: 0;
+  color: #fff;
+  transition: top 1s, color 0.8s 0.3s;
+}
+
+.mobile-menu__navigation-link {
+  text-decoration: none;
+  color: var(--ua-blue);
+  transition: all 0.3s;
+  font-size: 20px;
+}
+
+.mobile-menu__navigation-link:hover {
+  text-decoration: underline;
+}
+
+.mobile-menu.opened .mobile-menu__navigation-link {
+  color: #fff;
+  transition: all 0.4s 0.5s;
+}
+/* End of Mobile menu */
+
+/* logo */
+.logo {
+  height: 60px;
+  transition: all 0.2s 0.3s;
+  cursor: pointer;
+}
+
+.logo.changed {
+  filter: invert(99%) sepia(0%) saturate(5%) hue-rotate(161deg) brightness(150%)
+    contrast(104%);
+  transition: all 0.1s 0.3s;
+}
+/* End of logo */
+
+/* Burger */
+.burger {
+  font-size: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  transition: transform 0.7s;
+  display: none;
+  cursor: pointer;
+}
+
+.burger.changed {
+  transform: rotate(540deg);
+  transition: transform 0.9s ease-in-out;
+}
+
+.burger__line {
+  height: 5px;
+  background-color: var(--ua-blue);
+  opacity: 1;
+  transition: opacity 0.3s 0.2s, background-color 0.3s 0.2s, transform 0.4s 0.1s;
+}
+
+.burger.changed .burger__line {
+  background-color: #fff;
+}
+
+.burger.changed .burger__line:first-child {
+  transform: rotate(45deg) translate(9px, 10px);
+  transition: all 0.5s ease-in-out;
+}
+
+.burger.changed .burger__line:nth-child(2) {
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.burger.changed .burger__line:last-child {
+  transform: rotate(-45deg) translate(9px, -10px);
+  transition: all 0.5s ease-in-out;
+}
+/* End of Burger */
+
+/* Header */
+.header {
+  padding-top: 80px;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.header__logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 80px;
+}
+/* зачем враппер? на компьютере одно лого нужно позиционировать по центру, а на телефоне - лого и бургер по разным краям */
+/* с помощью такой обертки решаю эту задачу */
+
+.header__navigation {
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+}
+
+.header__navigation-link {
+  text-decoration: none;
+  color: var(--ua-blue);
+}
+
+.header__navigation-link:hover {
+  text-decoration: underline;
+}
+/* End of Header */
+
+/* Slider */
+.slider {
+  max-width: 1800px;
+  margin: 0 auto 80px;
+  padding: 0 60px;
+}
+
+.slick-list {
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.slider__item {
+  margin: 0 20px;
+  position: relative;
+}
+
+.slider__img-and-flag {
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+  height: inherit;
+  width: inherit;
+  aspect-ratio: 2 / 1;
+}
+
+.slider__item img {
+  width: inherit;
+  aspect-ratio: 2 / 1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.slider__img-and-flag::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 91, 187, 1) 50%,
+    rgba(255, 213, 0, 1) 50%
+  );
+  z-index: 1;
+}
+
+.slick-dots {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.slick-dots li {
+  font-size: 0;
+}
+
+.slick-dots button {
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--ua-blue);
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.slick-dots button:hover {
+  background-color: #ecf5ff;
+}
+
+.slick-active button {
+  background-color: var(--ua-blue);
+}
+
+.slick-active button:hover {
+  background-color: var(--ua-blue);
+}
+/* End of Slider */
+
+.content-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* About us */
+.about-us {
+  text-align: left;
+  font-size: 28px;
+  line-height: 1.4;
+  margin-bottom: 80px;
+}
+
+.about-us__paragraph:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.about-us__sentence {
+  margin: 0;
+}
+
+/* В шаблоне (по которому мы верстаем) у последнего параграфа (Glory to Ukraine!) обрезана нижняя часть line-height на 1.2 px */
+/* Я конечно могу это реализовать очень легко, но это сделает верстку намного более статичной, поэтому в данном моменте я решил не делать пиксель перфект => */
+/* и конечно теперь вся верстка поехала на эти 1.2 px, если сравнивать с шаблоном */
+
+/* End of About us */
+
+/* Section */
+.section {
+  border-top: 1px solid var(--ua-blue);
+  padding-top: 16px;
+  overflow-x: hidden;
+}
+
+.section:not(:last-child) {
+  margin-bottom: 80px;
+}
+
+.section__heading {
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.section__heading-underline {
+  font-size: 0px;
+  width: 500px;
+  height: 1px;
+  background-color: var(--ua-blue);
+  margin: 0 auto 40px auto;
+}
+
+.section__cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px;
+}
+/* Я помню, Вы говорили, что там, где не целые числа, можно округлять */
+/* Тут по макету ширина карточки 497px, а gap 28px */
+/* Что б это красивее смотрелось (по цифрам) я предлогаю сделать ширину карточки 500px и gap 24px, визуально ничего не меняется, но писать код приятнее */
+/* Я сделал по макету */
+
+/* End of Section */
+
+/* Card */
+.card {
+  text-align: left;
+  padding: 40px 40px 40px 30px;
+  border-left: 10px solid var(--ua-yellow);
+  background-color: var(--ua-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 497px;
+  min-height: 395px;
+}
+
+.card__article {
+  color: #fff;
+  line-height: 1.4;
+}
+
+.card__article strong {
+  font-size: 48px;
+  line-height: 1;
+}
+/* End of Card */
+
+/* Form */
+.form {
+  border: 1px solid var(--ua-blue);
+  padding: 30px;
+}
+
+.form__textarea-wrapper {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form__textarea {
+  margin: 0;
+  padding: 0;
+  resize: none;
+  width: 100%;
+  border: none;
+  font-size: 18px;
+}
+
+.form__textarea:focus {
+  outline: none;
+}
+
+.form__textarea::placeholder {
+  opacity: 0.5;
+  color: var(--ua-blue);
+}
+
+.form__btn {
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  padding: 14px 26px;
+  min-width: 200px;
+  color: #fff;
+  background-color: var(--ua-blue);
+  border: none;
+}
+
+.form__btn:hover {
+  background-color: #1a6bc2;
+  cursor: pointer;
+}
+/* End of Form */
+
+/* adaptive */
+@media (max-width: 1440px) {
+  .slider {
+    max-width: 1320px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  body {
+    padding: 0 0 120px 0;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+
+  .logo {
+    transition: all 0.7s;
+  }
+
+  .logo.changed {
+    transition: all 0.6s 0.3s;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .header {
+    padding: 50px 60px 0;
+  }
+
+  .header__logo-wrapper {
+    justify-content: space-between;
+  }
+
+  .header__navigation {
+    display: none;
+  }
+
+  .slider {
+    width: 100%;
+    padding: 0 40px;
+  }
+
+  .slider__img-and-flag {
+    max-width: none;
+  }
+
+  .slider__item img {
+    max-width: none;
+  }
+
+  .content-container {
+    max-width: 100%;
+    padding: 0 60px;
+  }
+
+  .about-us {
+    font-size: 24px;
+  }
+
+  .section__heading {
+    font-size: 30px;
+  }
+
+  .section__heading-underline {
+    max-width: none;
+    max-width: 450px;
+  }
+
+  .section:not(:last-child) {
+    margin-bottom: 100px;
+  }
+
+  .card {
+    min-width: 100%;
+    min-height: auto;
+    padding-top: 48px;
+  }
+
+  .form {
+    padding: 30px 40px;
+  }
+}
+
+@media (max-width: 880px) {
+  .slider {
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0 0 120px;
+    font-size: 16px;
+  }
+
+  .mobile-menu {
+    padding: 120px 0 380px 20px;
+  }
+
+  .logo {
+    height: 48px;
+    filter: invert(99%) sepia(0%) saturate(5%) hue-rotate(161deg)
+      brightness(150%) contrast(104%);
+    opacity: 0;
+    transition: opacity 0.7s;
+  }
+
+  .logo.changed {
+    opacity: 1;
+    transition: opacity 0.6s 0.3s;
+  }
+
+  .burger__line {
+    background-color: #fff;
+  }
+
+  .header {
+    padding: 20px 20px 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .header__logo-wrapper {
+    margin-bottom: 0;
+  }
+
+  .slider {
+    width: 100%;
+    margin: 0 auto 48px;
+    padding: 0;
+  }
+
+  .slick-list {
+    margin-bottom: 24px;
+  }
+
+  .slider__item {
+    margin: 0;
+  }
+
+  .slick-dots {
+    gap: 8px;
+  }
+
+  .slick-dots button {
+    width: 8px;
+    height: 8px;
+  }
+
+  .content-container {
+    padding: 0 20px;
+  }
+
+  .about-us {
+    font-size: 16px;
+    margin-bottom: 46px;
+  }
+
+  .about-us__paragraph:not(:last-child) {
+    margin-bottom: 6px;
+  }
+
+  .section:not(:last-child) {
+    margin-bottom: 46px;
+  }
+
+  .section__heading {
+    font-size: 20px;
+  }
+
+  .section__heading-underline {
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .section__cards-wrapper {
+    gap: 24px;
+  }
+
+  .card {
+    padding: 30px 30px 30px 20px;
+  }
+
+  .card__article strong {
+    display: block;
+    font-size: 24px;
+  }
+
+  .form {
+    border: none;
+    padding: 0;
+  }
+
+  .form__textarea-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form__textarea {
+    padding: 20px;
+    min-height: 150px;
+    border: 1px solid var(--ua-blue);
+  }
+
+  .form__textarea::placeholder {
+    text-align: center;
+  }
+
+  .form__btn {
+    width: 100%;
+  }
+}
+/* End of adaptive */
